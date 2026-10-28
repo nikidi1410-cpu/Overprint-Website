@@ -1,0 +1,22 @@
+// Overprint — the public print queue.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Print {
+  id        String   @id @default(cuid())
+  line      String
+  signedBy  String?
+  ink       String
+  copies    Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@index([ink, createdAt])
+  @@index([createdAt])
+}
