@@ -59,7 +59,13 @@ export async function sendToPress(
     };
   }
 
-  const row = await prisma.print.create({ data: parsed.data });
+  let row;
+  try {
+    row = await prisma.print.create({ data: parsed.data });
+  } catch (error) {
+    console.error("sendToPress failed:", error);
+    return { status: "error", message: "The press is offline right now. Try again later." };
+  }
 
   return {
     status: "printed",

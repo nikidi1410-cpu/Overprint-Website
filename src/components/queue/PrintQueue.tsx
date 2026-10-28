@@ -6,7 +6,18 @@ import { QueueClient } from "./QueueClient";
 async function QueueData() {
   // The wall changes with every visitor, so never prerender it.
   await connection();
-  const snapshot = await getSnapshot();
+  let snapshot;
+  try {
+    snapshot = await getSnapshot();
+  } catch (error) {
+    // Without a reachable database the rest of the page should still render.
+    console.error("Print queue unavailable:", error);
+    return (
+      <p role="status" className="max-w-[46ch] text-lg text-ink-soft">
+        The press is offline right now. The wall will be back soon.
+      </p>
+    );
+  }
   return <QueueClient initial={snapshot} />;
 }
 
